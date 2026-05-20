@@ -1,0 +1,2065 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Sengoku Quiz Battle | Dengan Pembahasan</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            transition: background 0.4s ease;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', 'VT323', monospace;
+            padding: 20px;
+        }
+
+        .game-container {
+            width: 1000px;
+            max-width: 95vw;
+            background: rgba(30, 42, 46, 0.9);
+            border-radius: 32px;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+            border: 1px solid #5f7f6b;
+            overflow: hidden;
+            backdrop-filter: blur(2px);
+            opacity: 0;
+            animation:
+                containerFade 2.7s ease forwards;
+        }
+
+        .panel {
+            padding: 1.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .menu-panel {
+            text-align: center;
+        }
+
+        .game-title {
+            font-size: 2.8rem;
+            font-weight: bold;
+            color: #f7d44a;
+            text-shadow: 4px 4px 0 #5a3e1b;
+            letter-spacing: 3px;
+            margin-bottom: 2rem;
+        }
+
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            margin: 30px 0;
+
+            opacity: 0;
+            transform: translateY(40px);
+            transition:
+            opacity 2s ease,
+            transform 2s ease;
+        }
+
+        .menu-buttons.show {
+
+            opacity: 1;
+            transform: translateY(0px);
+        }
+
+        .menu-buttons.show .btn {
+            opacity: 1;
+            filter: blur(0px);
+        }
+
+        .btn {
+            background: #2e4c3c;
+            border: none;
+            padding: 12px 32px;
+            font-size: 1.6rem;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: #f0ead0;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: 0.1s linear;
+            box-shadow: 0 5px 0 #1a2f24;
+            width: 260px;
+            letter-spacing: 2px;
+
+            transition:
+                transform 0.25s ease,
+                opacity 0.4s ease,
+                filter 0.4s ease,
+                box-shadow 0.3s ease;
+        }
+
+        .btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #1a2f24;
+        }
+
+        .btn-primary {
+            background: #c97e3a;
+            color: #1f2a1e;
+            box-shadow: 0 5px 0 #7e4a1f;
+        }
+
+        .main-menu-btn {
+            opacity: 0.2;
+            filter: blur(2px);
+            animation:
+                floatButton 3s ease-in-out infinite;
+
+            transition:
+                transform 0.25s ease,
+                opacity 0.4s ease,
+                filter 0.4s ease,
+                box-shadow 0.3s ease;
+}
+
+        .char-avatar-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 16px;
+            border: 2px solid #f7d44a;
+            image-rendering: auto;
+            transition:
+                transform 0.25s ease,
+                filter 0.25s ease;
+        }
+        .char-select {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 14px;
+            margin: 25px 0;
+            max-height: 55vh;
+            overflow-y: auto;
+            padding: 8px;
+        }
+        .char-card {
+            background: #2d3e36;
+            border-radius: 24px;
+            padding: 10px 6px;
+            width: 110px;
+            cursor: pointer;
+            text-align: center;
+            border: 2px solid #b9a56e;
+            transition:
+                transform 0.25s ease,
+                box-shadow 0.25s ease,
+                border-color 0.25s ease,
+                background 0.25s ease;
+        }
+        .char-card.selected {
+            background: #c97e3a;
+            border-color: #f7d44a;
+            transform: scale(1.02);
+            box-shadow: 0 0 12px gold;
+            animation:
+                selectedPulse 1.5s ease-in-out infinite;
+        }
+        .char-card:hover {
+            transform:
+                translateY(-8px)
+                scale(1.05);
+
+            box-shadow:
+                0 0 22px rgba(255,215,100,0.8);
+            border-color: #ffd966;
+            background: #3a5245;
+        }
+
+        .char-card:hover .char-avatar-img {
+            transform: scale(1.08);
+            filter:
+                brightness(1.1)
+                saturate(1.15);
+}
+
+        .char-card:hover .char-name {
+            color: #fff4bf;
+            text-shadow:
+                0 0 12px rgba(255,240,180,0.8);
+}
+
+        .char-avatar {
+            font-size: 3rem;
+        }
+        .char-name {
+            font-weight: bold;
+            margin-top: 6px;
+            color: #efe6c9;
+            font-size: 0.8rem;
+            transition:
+                color 0.25s ease,
+                text-shadow 0.25s ease;
+        }
+
+        .game-area {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 28px;
+            padding: 1rem;
+        }
+
+        .canvas-side {
+            background: #1f2c24;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            box-shadow: inset 0 0 0 2px #587a60, 0 8px 20px black;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            background: #242f2b;
+            border-radius: 16px;
+            image-rendering: crisp-edges;
+            image-rendering: pixelated;
+        }
+
+        .quiz-card {
+            background: #efe2c9;
+            padding: 1.3rem;
+            border-radius: 28px;
+            box-shadow: inset 0 0 0 2px #ffffdd, 0 6px 0 0 #a5946c;
+        }
+
+        .state-badge {
+            background: #2e4d3b;
+            display: inline-block;
+            padding: 6px 18px;
+            border-radius: 40px;
+            color: #ffecb3;
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #2c2b26;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .option {
+            background: #faf2df;
+            padding: 10px 16px;
+            border-radius: 60px;
+            border: 1px solid #c0a16b;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.05s linear;
+            font-size: 1rem;
+        }
+        .option:hover {
+            background: #e7cfaa;
+            transform: scale(0.99);
+        }
+
+        .btn:hover {
+            transform:
+                scale(1.06)
+                translateY(-3px);
+
+            box-shadow:
+                0 0 20px rgba(255,215,100,0.8);
+
+            background: #e5a34f;
+
+            color: white;
+
+            letter-spacing: 3px;
+        }   
+
+        .score-info {
+            
+            display: flex;
+            justify-content: space-between;
+            margin-top: 18px;
+            font-weight: bold;
+            background: #2d3b2e;
+            padding: 8px 15px;
+            border-radius: 60px;
+            color: #fbd26a;
+        }    
+        
+        .battle-ui {
+            background: #5a7060;
+            border-radius: 18px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 2px solid #4d6a54;
+        }
+
+.hp-row {
+    margin: 8px 0;
+}
+
+.hp-label {
+    color: #ffe7a3;
+    font-weight: bold;
+    margin-bottom: 4px;
+    font-size: 0.9rem;
+}
+
+.hp-bar {
+    width: 100%;
+    height: 18px;
+    background: #2b2b2b;
+    border-radius: 30px;
+    overflow: hidden;
+    border: 1px solid #777;
+}
+
+.hp-fill {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(to right, #ff4444, #ffcc33);
+    transition: width 0.3s ease;
+}
+
+.exp-bar {
+    width: 100%;
+    height: 14px;
+    background: #222;
+    border-radius: 30px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.exp-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(to right, #3ba7ff, #8be0ff);
+    transition: width 0.3s ease;
+}
+
+.level-text {
+    color: #9fe8ff;
+    margin-top: 5px;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.attack-flash {
+    animation: flashAtk 0.15s linear;
+}
+
+@keyframes flashAtk {
+    0% { transform: translateX(0px); }
+    25% { transform: translateX(-8px); }
+    50% { transform: translateX(8px); }
+    100% { transform: translateX(0px); }
+}
+
+@keyframes containerFade {
+    from {
+        opacity: 0;
+        transform:
+            scale(0.96)
+            translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform:
+            scale(1)
+            translateY(0px);
+    }
+}
+@keyframes selectedPulse {
+    0% {box-shadow: 0 0 12px gold; }
+    50% {box-shadow: 0 0 24px rgba(255,215,0,1); }
+    100% {box-shadow: 0 0 12px gold; }
+}
+
+@keyframes floatButton {
+
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-6px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+        
+
+        /* MODAL PEMBAHASAN */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: #1e2a2e;
+            border-radius: 32px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            border: 2px solid #f7d44a;
+            color: #f0ead0;
+            font-family: monospace;
+        }
+        .modal-content h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .modal-content p {
+            font-size: 1.2rem;
+            margin: 1rem 0;
+            line-height: 1.4;
+        }
+        .modal-content button {
+            margin-top: 1rem;
+            padding: 8px 24px;
+            font-size: 1.2rem;
+            background: #c97e3a;
+            border: none;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .info-panel {
+            background: #1f2c27;
+            border-radius: 28px;
+            padding: 1.8rem;
+        }
+        .input-name {
+            background: #efe2c9;
+            border: none;
+            padding: 12px;
+            font-size: 1.2rem;
+            font-family: monospace;
+            border-radius: 48px;
+            width: 70%;
+            margin: 10px 0;
+        }
+        .progress-text {
+            font-size: 1.2rem;
+            background: #0b1a15;
+            padding: 12px;
+            border-radius: 24px;
+            margin: 10px 0;
+            color: #bedfc7;
+        }
+        .rule-list {
+            list-style: none;
+        }
+        .rule-list li {
+            margin: 10px 0;
+            font-size: 0.95rem;
+            background: #2c3e2b;
+            padding: 8px;
+            border-radius: 18px;
+            color: white;
+        }
+        .back-btn {
+            background: #7c6b45;
+            margin-top: 20px;
+            width: auto;
+            padding: 8px 24px;
+            font-size: 1.2rem;
+        }
+        .result-area {
+            text-align: center;
+        }
+        .grade {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: #ffd966;
+            display: inline-block;
+            padding: 5px 35px;
+            border-radius: 80px;
+            margin: 20px;
+        }
+        footer {
+            font-size: 0.7rem;
+            text-align: center;
+            color: #6e8b7a;
+            padding: 10px;
+        }
+        .confirm-btn {
+            margin: 5px auto 20px auto;
+            display: block;
+        }
+#bgVideo {
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    z-index: -10;
+
+    filter:
+        brightness(0.45)
+        contrast(1.1)
+        saturate(1.1);
+}
+
+#videoOverlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(0,0,0,0.15),
+            rgba(0,0,0,0.7)
+        );
+
+    z-index: -9;
+}
+
+#startScreen {
+
+    position: fixed;
+
+    inset: 0;
+
+    background: black;
+
+    z-index: 99999;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    transition:
+        opacity 1.5s ease;
+}
+
+#startButton {
+
+    color: white;
+
+    font-size: 2.5rem;
+
+    font-family: monospace;
+
+    letter-spacing: 6px;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.3s ease,
+        text-shadow 0.3s ease,
+        opacity 0.3s ease;
+
+    animation:
+        startPulse 2s ease-in-out infinite;
+
+    font-weight: bold;
+
+    filter:
+        drop-shadow(
+        0 0 8px rgba(255,220,120,0.2)
+    );    
+}
+
+.hero-preview {
+    position: relative;
+    width: 100%;
+    height: 280px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+.preview-img {
+    position: absolute;
+    height: 100%;
+    object-fit: contain;
+    opacity: 0;
+    
+    transition:
+        opacity 0.45s ease,
+        transform 0.45s ease,
+        filter  0.45s ease;
+
+    pointer-events: none;
+
+    will-change:
+        transform,
+        opacity,
+        filter;
+}
+
+.right-preview {
+    right: 90px;
+    height: 105%;
+    max-width: 40%;
+    object-fit: contain;
+    transform:
+        translateX(160px)
+        scale(0.94);
+
+    opacity: 0;
+    filter: blur(8px);
+    filter:
+    drop-shadow(
+        0 0 18px rgba(0,0,0,0.45)
+    )
+    blur(8px);
+    pointer-events: none;
+    z-index: 1;   
+}
+
+
+.right-preview.show {
+    opacity: 1 !important;
+
+    transform:
+        translateX(0px)
+        scale(1) !important;
+
+    filter:
+        drop-shadow(
+            0 0 18px rgba(0,0,0,0.45)
+        )
+        blur(0px) !important;
+} 
+
+
+#startButton:hover {
+
+    transform: scale(1.08);
+
+    text-shadow:
+        0 0 18px rgba(255,255,255,0.9);
+}
+
+
+
+@keyframes startPulse {
+
+    0% {
+
+        opacity: 0.65;
+
+        transform: scale(1);
+
+        text-shadow:
+            0 0 6px rgba(255,220,120,0.15),
+            0 0 12px rgba(255,220,120,0.08);
+    }
+
+    50% {
+
+        opacity: 1;
+
+        transform: scale(1.03);
+
+        text-shadow:
+            0 0 10px rgba(255,220,120,0.35),
+            0 0 24px rgba(255,220,120,0.18);
+    }
+
+    100% {
+
+        opacity: 0.65;
+
+        transform: scale(1);
+
+        text-shadow:
+            0 0 6px rgba(255,220,120,0.15),
+            0 0 12px rgba(255,220,120,0.08);
+    }
+}
+
+.credits-scene {
+
+    position: fixed;
+
+    inset: 0;
+
+    background:
+        linear-gradient(
+            to bottom,
+            rgba(0,0,0,0.96),
+            rgba(10,10,10,1)
+        );
+
+    z-index: 9999;
+
+    overflow: hidden;
+
+    display: none;
+
+    justify-content: center;
+
+    align-items: center;
+}
+
+.credits-roll {
+
+    position: absolute;
+
+    width: 100%;
+
+    text-align: center;
+
+    color: white;
+
+    font-family: monospace;
+
+    animation:
+        creditsScroll 55s linear forwards;
+}
+
+.credits-roll h1 {
+
+    font-size: 3rem;
+
+    color: #ffd966;
+
+    margin: 40px 0;
+
+    text-shadow:
+        0 0 20px rgba(255,215,100,0.6);
+}
+
+.credits-roll h2 {
+
+    font-size: 2rem;
+
+    color: #f2f2f2;
+
+    margin: 30px 0;
+}
+
+.credits-roll h3 {
+
+    font-size: 1.2rem;
+
+    color: #8bd3ff;
+
+    margin-top: 50px;
+
+    letter-spacing: 4px;
+}
+
+.credits-roll p {
+
+    font-size: 1.5rem;
+
+    margin-top: 10px;
+
+    color: #ffffff;
+}
+
+@keyframes creditsScroll {
+
+    from {
+
+        transform:
+            translateY(120%);
+    }
+
+    to {
+
+        transform:
+            translateY(-120%);
+    }
+}
+    </style>
+</head>
+
+<body>
+    <!-- START SCREEN -->
+<div id="startScreen">
+
+    <div id="startButton">
+
+        START THE GAME
+
+    </div>
+
+</div>
+
+<video id="bgVideo"
+            muted
+            loop
+            playsinline
+            preload="auto">
+        
+
+    <source src="video/new.opening.mp4"
+            type="video/mp4">
+
+</video>
+
+<div id="videoOverlay"></div>
+
+<div class="game-container" 
+        id="gameContainer"
+        style="opacity:0;">
+    
+        <!-- MENU UTAMA -->
+    <div id="mainMenuPanel" class="panel menu-panel">
+        <div class="game-title">⚔️ SENGOKU <br> QUIZ BATTLE ⚔️</div>
+        <div class="menu-buttons">
+            <button class="btn main-menu-btn btn-primary" id="playNowBtn">▶ PLAY NOW</button>
+            <button class="btn main-menu-btn" id="profileBtn">👤 PROFILE</button>
+            <button class="btn main-menu-btn" id="rulesBtn">📜 RULES</button>
+        </div>
+        <footer>★ Jawab Soal Dengan Benar untuk Mengalahkan Musuh ★</footer>
+    </div>
+
+    <!-- PANEL PILIH KARAKTER -->
+    <div id="charSelectPanel" class="panel hidden">
+        <h2 style="color:#ffde9c; text-align:center;">Pilih jagoan mu</h2>
+    <div class="hero-preview">
+        
+        <img id="rightPreview"
+            class="preview-img right-preview">
+</div>
+
+        <div class="char-select" id="characterList"></div>
+        <button class="btn btn-primary confirm-btn" id="confirmCharBtn">Mulai Petualangan</button>
+        <button class="btn back-btn" id="cancelCharBtn">⬅ Kembali</button>
+    </div>
+
+    <!-- PANEL PROFIL -->
+    <div id="profilePanel" class="panel hidden info-panel">
+        <h2>🎌 Profil Samurai</h2>
+        <label>Nama Prajurit :</label><br>
+        <input type="text" id="playerNameInput" class="input-name" placeholder="Nama kamu" maxlength="20">
+        <button class="btn" id="saveNameBtn" style="padding: 6px 18px; font-size:1rem;">Simpan</button>
+        <div class="progress-text" id="progressDisplay">Belum ada riwayat pertempuran</div>
+        <button class="btn back-btn" id="backFromProfile">Kembali ke Menu</button>
+    </div>
+
+    <!-- PANEL RULES -->
+    <div id="rulesPanel" class="panel hidden info-panel">
+        <h2>⚡ ATURAN PERTEMPURAN ⚡</h2>
+        <ul class="rule-list">
+            <li>📌 30 State = 30 soal. Setiap state wajib menjawab untuk lanjut.</li>
+            <li>🎮 Setiap 10 state (10,20,30) adalah ★ BOSS ★ → lebih sulit!</li>
+            <li>✅ Jawaban benar state biasa ➜ +10 poin</li>
+            <li>✅ Jawaban benar state BOSS ➜ +20 poin</li>
+            <li>❌ Jawaban salah state biasa ➜ -5 poin</li>
+            <li>❌ Jawaban salah state BOSS ➜ -15 poin</li>
+            <li>🏆 Hasil akhir: <strong>A</strong> (salah ≤5), <strong>B</strong> (salah 6-9), <strong>C</strong> (salah ≥10)</li>
+            <li>📖 Setelah menjawab, akan muncul PEMBAHASAN soal sebelum lanjut ke state berikutnya.</li>
+        </ul>
+        <button class="btn back-btn" id="backFromRules">Kembali ke Menu</button>
+    </div>
+
+    <!-- GAME UTAMA -->
+    <div id="gamePanel" class="panel hidden">
+        <div class="game-area" id="gameArea">
+            <div class="canvas-side">
+                <canvas id="battleCanvas" width="800" height="200" style="width:100%; height:auto; max-width:800px; margin:0 auto; display:block"></canvas>
+            </div>
+            <div class="quiz-card">
+                <div class="battle-ui">
+
+    <div class="hp-row">
+        <div class="hp-label">
+            ⚔️ PLAYER HP
+            <span id="playerHpText">100 / 100</span>
+        </div>
+
+        <div class="hp-bar">
+            <div class="hp-fill" id="playerHpFill"></div>
+        </div>
+    </div>
+
+
+    <div class="level-text" id="levelText">
+        ⭐ Level 1
+    </div>
+
+    <div class="exp-bar">
+        <div class="exp-fill" id="expFill"></div>
+    </div>
+
+</div>
+                <div class="state-badge" id="stateLabel">State 1 / 30</div>
+                <div class="question-text" id="questionText">Memuat soal...</div>
+                <div class="options" id="optionsContainer"></div>
+                <div class="score-info">
+                    <span>🏆 Skor: <span id="currentScore">0</span></span>
+                    <span>❌ Salah: <span id="wrongCount">0</span></span>
+                    <span>⚔️ <span id="bossIndicator">Biasa</span></span>
+                </div>
+                <button class="btn back-btn" id="quitGameBtn" style="margin-top:15px;">Keluar ke Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CREDITS SCENE -->
+<div id="creditsPanel"
+    class="panel hidden credits-scene">
+
+    <div class="credits-roll" id="creditsRoll">
+
+        <h1>⚔️ SENGOKU QUIZ BATTLE ⚔️</h1>
+
+        <h2>THE END</h2>
+
+        <br><br>
+
+        <h3>GAME DIRECTOR</h3>
+        <p>Dika</p>
+
+        <h3>IDE CONCEPTOR</h3>
+        <p>Dika</p>
+
+        <h3>GAME DESIGNER</h3>
+        <p>Dika</p>
+
+        <h3>PROGRAMMER</h3>
+        <p>Dika</p>
+
+        <h3>UI DESIGNER</h3>
+        <p>Dika</p>
+
+        <h3>PIXEL ART DIRECTOR</h3>
+        <p>Dika</p>
+
+        <h3>CHARACTER DESIGN</h3>
+        <p>Dika</p>
+
+        <h3>BATTLE SYSTEM DESIGN</h3>
+        <p>Dika</p>
+
+        <h3>QUESTION DESIGN</h3>
+        <p>Dika</p>
+
+        <h3>SOUND DESIGN</h3>
+        <p>Dika</p>
+
+        <h3>VISUAL EFFECTS</h3>
+        <p>Dika</p>
+
+        <h3>OPENING CINEMATIC</h3>
+        <p>Dika</p>
+
+        <h3>VOICE DIRECTOR</h3>
+        <p>Dika</p>
+
+        <h3>GAME TESTER</h3>
+        <p>Dika</p>
+
+        <h3>SPECIAL THANKS</h3>
+        <p>Dika</p>
+        <p>Dika lagi</p>
+        <p>Dika terus</p>
+
+        <br><br><br>
+
+        <h2>
+            "Victory belongs<br>
+            to those who keep fighting."
+        </h2>
+
+        <br><br>
+
+        <h1>THANK YOU FOR PLAYING</h1>
+
+    </div>
+</div>
+
+    <!-- HASIL AKHIR -->
+    <div id="resultPanel" class="panel hidden result-area">
+        <h2>🏁 PERANG USAI 🏁</h2>
+        <div id="finalScoreDisplay"></div>
+        <div id="gradeDisplay" class="grade"></div>
+        <button class="btn main-menu-btn btn-primary" id="restartFromResultBtn">Main Lagi</button>
+        <button class="btn back-btn" id="menuFromResultBtn">Menu Utama</button>
+    </div>
+</div>
+
+<script>
+    // ======================= SOAL + PEMBAHASAN (30) =======================
+    const QUESTIONS = [
+        { text: "Nilai dari 3/4 + 5/8 - 1/2 adalah …", options: ["5/8", "7/8", "9/8"], correct: 1, explanation: "Samakan penyebut menjadi 8: 6/8 + 5/8 - 4/8 = 7/8." },
+        { text: "Kalimat yang menggunakan majas personifikasi adalah …", options: ["Angin malam berbisik lembut di telingaku", "Wajahnya secerah bulan", "Ia berlari secepat kilat"], correct: 0, explanation: "Personifikasi memberikan sifat manusia pada benda mati. 'Angin berbisik' adalah contohnya." },
+        { text: "Bagian sel yang berfungsi sebagai pusat pengendali aktivitas sel adalah …", options: ["Mitokondria", "Ribosom", "Nukleus"], correct: 2, explanation: "Nukleus (inti sel) berisi DNA dan mengatur seluruh aktivitas sel." },
+        { text: "Politik 'devide et impera' pada masa kolonial Belanda bertujuan untuk …", options: ["Memajukan pendidikan pribumi", "Memecah persatuan rakyat Indonesia", "Mengembangkan perdagangan internasional"], correct: 1, explanation: "Devide et impera = pecah belah, bertujuan melemahkan persatuan." },
+        { text: "Menurut filsafat eksistensialisme, manusia dianggap …", options: ["Tidak memiliki kebebasan memilih", "Ditentukan sepenuhnya oleh takdir", "Bertanggung jawab atas pilihan hidupnya sendiri"], correct: 2, explanation: "Eksistensialisme menekankan kebebasan dan tanggung jawab individu." },
+        { text: "Nilai dari 2³ + 3² - 5 adalah …", options: ["12", "10", "14"], correct: 0, explanation: "2³=8, 3²=9, 8+9-5=12." },
+        { text: "Kata 'implementasi' memiliki makna …", options: ["Pelaksanaan", "Penolakan", "Perdebatan"], correct: 0, explanation: "Implementasi berarti pelaksanaan atau penerapan." },
+        { text: "Jika tekanan udara meningkat, titik didih air akan …", options: ["Menurun", "Tetap", "Meningkat"], correct: 2, explanation: "Semakin tinggi tekanan, semakin tinggi titik didih." },
+        { text: "Faktor utama yang menyebabkan terjadinya urbanisasi adalah …", options: ["Rendahnya teknologi desa", "Keinginan memperoleh pekerjaan yang lebih baik", "Tingginya hasil pertanian"], correct: 1, explanation: "Urbanisasi didorong oleh mencari pekerjaan dan kehidupan lebih baik di kota." },
+        { text: "Seorang ilmuwan menemukan teknologi yang mampu memanipulasi ingatan manusia. Keputusan paling filosofis dan etis …", options: ["Melarang total", "Mengizinkan bebas", "Mengatur ketat dengan HAM & etika"], correct: 2, explanation: "Pendekatan etis adalah mengatur dengan mempertimbangkan HAM dan dampak jangka panjang." },
+        { text: "Hasil dari (2³×5) - √81 adalah …", options: ["31", "40", "49"], correct: 0, explanation: "2³×5 = 8×5=40, √81=9, 40-9=31." },
+        { text: "Kalimat yang paling efektif adalah …", options: ["Para siswa-siswa diminta untuk segera masuk ke dalam kelas", "Siswa diminta segera masuk kelas", "Semua para siswa diminta masuk ke kelas"], correct: 1, explanation: "Kalimat efektif hemat kata, tidak bertele-tele. 'Siswa diminta segera masuk kelas' paling ringkas." },
+        { text: "Fungsi klorofil pada tumbuhan adalah …", options: ["Menyerap air", "Membantu fotosintesis dengan menangkap cahaya", "Mengedarkan hasil fotosintesis"], correct: 1, explanation: "Klorofil menyerap cahaya matahari untuk fotosintesis." },
+        { text: "Dampak positif globalisasi di bidang ilmu pengetahuan adalah …", options: ["Berkurangnya budaya lokal", "Mudahnya akses informasi & teknologi", "Meningkatnya ketergantungan impor"], correct: 1, explanation: "Globalisasi memudahkan akses ke informasi dan teknologi dari seluruh dunia." },
+        { text: "Tokoh filsafat 'Cogito, ergo sum' adalah …", options: ["Plato", "René Descartes", "Aristoteles"], correct: 1, explanation: "Cogito ergo sum (Aku berpikir maka aku ada) adalah kutipan terkenal dari René Descartes." },
+        { text: "Jika panjang sisi persegi diperbesar 3 kali, maka luasnya menjadi …", options: ["3 kali lipat", "6 kali lipat", "9 kali lipat"], correct: 2, explanation: "Luas persegi = s², jika s menjadi 3s, luas menjadi 9s² (9 kali lipat)." },
+        { text: "Kata serapan yang penulisannya benar adalah …", options: ["Aktifitas", "Aktivitas", "Aktifitaz"], correct: 1, explanation: "Bentuk baku adalah 'aktivitas' (dari bahasa Inggris activity)." },
+        { text: "Planet yang memiliki cincin paling jelas adalah …", options: ["Mars", "Saturnus", "Uranus"], correct: 1, explanation: "Saturnus terkenal dengan sistem cincinnya yang sangat jelas." },
+        { text: "Salah satu penyebab runtuhnya Kerajaan Majapahit adalah …", options: ["Serangan Portugis", "Perang saudara & melemahnya pusat", "Letusan Krakatau"], correct: 1, explanation: "Perang saudara (Paregreg) dan melemahnya kekuasaan pusat menyebabkan keruntuhan Majapahit." },
+        { text: "Masalah terbesar jika AI super menentukan semua keputusan tanpa kebebasan manusia …", options: ["Teknologi mahal", "Hilangnya otonomi & makna kemanusiaan", "Manusia tak perlu kerja"], correct: 1, explanation: "Kehilangan otonomi dan makna hidup adalah masalah etis utama." },
+        { text: "Nilai dari persamaan 3x-7 = 2x+9 adalah …", options: ["2", "16", "-16"], correct: 1, explanation: "3x-7 = 2x+9 → 3x-2x = 9+7 → x = 16." },
+        { text: "Makna konotatif dari 'tangan kanan' adalah …", options: ["Bagian tubuh kanan", "Orang kepercayaan", "Orang kidal"], correct: 1, explanation: "'Tangan kanan' secara konotatif berarti orang kepercayaan atau asisten terdekat." },
+        { text: "Perubahan energi pada panel surya adalah …", options: ["Kimia → panas", "Cahaya → listrik", "Listrik → gerak"], correct: 1, explanation: "Panel surya mengubah energi cahaya matahari menjadi energi listrik." },
+        { text: "Organisasi perdagangan dunia dikenal dengan singkatan …", options: ["WTO", "WHO", "UNESCO"], correct: 0, explanation: "WTO = World Trade Organization (Organisasi Perdagangan Dunia)." },
+        { text: "Dalam utilitarianisme, tindakan baik apabila …", options: ["Menguntungkan diri", "Sesuai tradisi", "Manfaat terbesar bagi banyak orang"], correct: 2, explanation: "Utilitarianisme mengukur kebaikan dari manfaat terbesar untuk sebanyak mungkin orang." },
+        { text: "Barisan 2, 6, 18, 54, suku berikutnya …", options: ["72", "108", "162"], correct: 2, explanation: "Pola x3: 2×3=6, 6×3=18, 18×3=54, 54×3=162." },
+        { text: "Paragraf deduktif adalah paragraf yang ide pokoknya …", options: ["di akhir", "di awal", "tidak ada"], correct: 1, explanation: "Paragraf deduktif memiliki ide pokok di awal kalimat, kemudian diikuti penjelasan." },
+        { text: "Lapisan atmosfer pelindung sinar UV adalah …", options: ["Troposfer", "Mesosfer", "Ozonosfer"], correct: 2, explanation: "Lapisan ozon (Ozonosfer) menyerap sebagian besar sinar UV." },
+        { text: "Revolusi Industri pertama pesat di negara …", options: ["Inggris", "Rusia", "Jepang"], correct: 0, explanation: "Revolusi Industri dimulai di Inggris pada abad ke-18." },
+        { text: "Krisis populasi dan sumber daya: konflik utama perspektif moral …", options: ["Kebebasan individu vs kepentingan kolektif", "Persaingan teknologi", "Ekonomi digital"], correct: 0, explanation: "Konflik antara hak individu untuk bereproduksi vs kepentingan kolektif jangka panjang." }
+    ];
+
+    // KARAKTER 
+    const CHARACTERS = [
+        { id: "date", name: "Date Masamune", avatarUrl: "Basara_img/date.jpg", 
+            battleSprite:"pixel/p.date.png", rightImage:"right/date.kanan.png",
+            voice:"voice/date.m4a"}, 
+        
+        { id: "yukimura", name: "Sanada Yukimura", avatarUrl: "Basara_img/sanada.jpg", 
+            battleSprite:"pixel/p.yukimura.png", rightImage:"right/sanada.kanan.png",
+            voice:"voice/date.m4a"},
+
+        { id: "keiji", name: "Maeda Keiji", avatarUrl: "Basara_img/keiji.jpg", 
+            battleSprite:"pixel/p.keiji.png", rightImage:"right/keiji.kanan.png",
+            voice:"voice/keiji.m4a"}, 
+
+        { id: "nobunaga", name: "Oda Nobunaga", avatarUrl: "Basara_img/oda.jpg",
+            battleSprite:"pixel/p.oda.png", rightImage:"right/oda.kanan.png",
+            voice:"voice/oda.m4a"},
+        
+        { id: "mitsuhide", name: "Akechi Mitsuhide", avatarUrl: "Basara_img/mitsuhide.jpg", 
+            battleSprite:"pixel/p.hide.png", rightImage:"right/mitsuhide.kanan.png",
+            voice:"voice/mitsuhide.m4a" },
+
+        { id: "ranmaru", name: "Mori Ranmaru", avatarUrl: "Basara_img/ranmaru.jpg", 
+            battleSprite:"pixel/p.ranmaru.png", rightImage:"right/ranmaru.kanan.png",
+            voice:"voice/ranmaru.m4a" },
+
+        { id: "kenshin", name: "Uesugi Kenshin", avatarUrl: "Basara_img/kenshin.jpg", 
+            battleSprite:"pixel/p.kenshin.png", rightImage:"right/kenshin.kanan.png",
+            voice:"voice/kenshin.m4a"}, 
+
+        { id: "shingen", name: "Takeda Shingen", avatarUrl: "Basara_img/shingen.jpg", 
+            battleSprite:"pixel/p.shingen.png", rightImage:"right/shingen.kanan.png",
+            voice:"voice/shingen.m4a"  },
+
+        { id: "kasuga", name: "Kasuga", avatarUrl: "Basara_img/kasuga.jpg", 
+            battleSprite:"pixel/p.kasuga.png", rightImage:"right/kasuga.kanan.png",
+            voice:"voice/kasuga.m4a"  },
+
+        { id: "itsuki", name: "Itsuki", avatarUrl: "Basara_img/itsuki.jpg", 
+            battleSprite:"pixel/p.itsuki.png", rightImage:"right/itsuki.kanan.png",
+            voice:"voice/itsuki.m4a" },
+
+        { id: "ieyasu", name: "Tokugawa Ieyasu", avatarUrl: "Basara_img/ieyasu.jpg", 
+            battleSprite:"pixel/p.tokugawa.png", rightImage:"right/tokugawa.kanan.png",
+            voice:"voice/tokugawa.m4a" },
+
+        { id: "tadakatsu", name: "Honda Tadakatsu", avatarUrl: "Basara_img/honda.jpg", 
+            battleSprite:"pixel/p.honda.png", rightImage:"right/honda.kanan.png",
+            voice:"voice/honda.m4a" },
+
+        { id: "nohime", name: "Nohime", avatarUrl: "Basara_img/nohime.jpg", 
+            battleSprite:"pixel/p.nohime.png", rightImage:"right/nohime.kanan.png",
+            voice:"voice/nohime.m4a" },
+
+        { id: "oichi", name: "Oichi", avatarUrl: "Basara_img/oichi.jpg", 
+            battleSprite:"pixel/p.oichi.png", rightImage:"right/oichi.kanan.png",
+            voice:"voice/oichi.m4a" },
+
+        { id: "nagamasa", name: "Azai Nagamasa", avatarUrl: "Basara_img/nagamasa.jpg", 
+            battleSprite:"pixel/p.azai.png", rightImage:"right/azai.kanan.png",
+            voice:"voice/azai.m4a" },
+
+        { id: "yoshihiro", name: "Shimazu Yoshihiro", avatarUrl: "Basara_img/shimazu.jpg", 
+            battleSprite:"pixel/p.shimazu.png", rightImage:"right/shimazu.kanan.png",
+            voice:"voice/shimazu.m4a" },
+
+        { id: "musashi", name: "Miyamoto Musashi", avatarUrl: "Basara_img/musashi.jpg", 
+            battleSprite:"pixel/p.musashi.png", rightImage:"right/musashi.kanan.png",
+            voice:"voice/musashi.m4a"},
+
+        { id: "toshiie", name: "Maeda Toshiie", avatarUrl: "Basara_img/toshiee.jpg", 
+            battleSprite:"pixel/p.toshie.png", rightImage:"right/toshiee.kanan.png",
+            voice:"voice/toshiee.m4a" },
+
+        { id: "matsu", name: "Matsu", avatarUrl: "Basara_img/matsu.jpg", 
+            battleSprite:"pixel/p.matsu.png", rightImage:"right/matsu.kanan.png",
+            voice:"voice/matsu.m4a"},
+
+        { id: "motochika", name: "Chosokabe Motochika", avatarUrl: "Basara_img/motochika.jpg", 
+            battleSprite:"pixel/p.chika.png", rightImage:"right/chika.kanan.png",
+            voice:"voice/chika.m4a" },
+
+        { id: "motonari", name: "Mori Motonari", avatarUrl: "Basara_img/motonari.jpg", 
+            battleSprite:"pixel/p.mori.png", rightImage:"right/mori.kanan.png",
+            voice:"voice/mori.m4a" }, 
+
+        { id: "sasuke", name: "Sarutobi Sasuke", avatarUrl: "Basara_img/sasuke.jpg", 
+            battleSprite:"pixel/p.sasuke.png", rightImage:"right/sasuke.kanan.png",
+            voice:"voice/sasuke.m4a"},
+
+        { id: "kojuro", name: "Katakura Kojuro", avatarUrl: "Basara_img/kojuro.jpg", 
+            battleSprite:"pixel/p.kojuro.png",rightImage:"right/kojuro.kanan.png",
+            voice:"voice/kojuro.m4a" }, 
+
+        { id: "kotaro", name: "Fuma Kotaro", avatarUrl: "Basara_img/fhuma.jpg", 
+            battleSprite:"pixel/p.fuma.png", rightImage:"right/fuma.kanan.png",
+            voice:"voice/fuma.m4a" }, 
+
+        { id: "yoshimoto", name: "Imagawa Yoshimoto", avatarUrl: "Basara_img/imagawa.jpg", 
+            battleSprite:"pixel/p.imagawa.png", rightImage:"right/imagawa.kanan.png",
+            voice:"voice/imagawa.m4a" },
+
+        { id: "hideyoshi", name: "Toyotomi Hideyoshi", avatarUrl: "Basara_img/toyotomi.jpg", 
+            battleSprite:"pixel/p.toyotomi.png", rightImage:"right/toyotomi.kanan.png",
+            voice:"voice/toyotomi.m4a" }, 
+
+        { id: "hanbei", name: "Takenaka Hanbei", avatarUrl: "Basara_img/hanbei.jpg", 
+            battleSprite:"pixel/p.hanbei.png", rightImage:"right/hanbei.kanan.png",
+            voice:"voice/hanbei.m4a" },
+        
+        { id: "xavi", name: "Xavi", avatarUrl: "Basara_img/xavi.jpg", 
+            battleSprite:"pixel/p.xavi.png", rightImage:"right/xavi.kanan.png",
+            voice:"voice/xavi.m4a" },    
+        
+    ];
+
+    const characterBattleSprites = {};
+    CHARACTERS.forEach(char => {
+
+    const img = new Image();
+
+    img.src = char.battleSprite;
+
+    characterBattleSprites[char.id] = img;
+
+});
+
+    // Audio
+    let audioCtx = null;
+    function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+    function playSound(freq, dur=0.2, vol=0.3) {
+        if (!audioCtx) { initAudio(); if(audioCtx.state==='suspended') audioCtx.resume().then(()=>playSoundInternal(freq,dur,vol)); return; }
+        playSoundInternal(freq,dur,vol);
+    }
+    function playSoundInternal(freq,dur,vol) {
+        if(!audioCtx) return;
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(vol, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now+dur);
+        osc.start();
+        osc.stop(now+dur);
+    }
+    function playCorrect() { playSound(880,0.2,0.2); }
+    function playWrong() { playSound(320,0.3,0.2); }
+
+    let currentVoice = null;
+
+    let battleMusic = null;
+
+
+    function fadeVideoVolume(target, speed = 0.03){
+
+    const bgVideo =
+        document.getElementById('bgVideo');
+
+    clearInterval(bgVideo.fadeInterval);
+
+    bgVideo.fadeInterval = setInterval(()=>{
+
+        if(bgVideo.volume < target){
+
+            bgVideo.volume += speed;
+
+            if(bgVideo.volume >= target){
+
+                bgVideo.volume = target;
+
+                clearInterval(bgVideo.fadeInterval);
+            }
+
+        } else {
+
+            bgVideo.volume -= speed;
+
+            if(bgVideo.volume <= target){
+
+                bgVideo.volume = target;
+
+                clearInterval(bgVideo.fadeInterval);
+            }
+        }
+
+    }, 60);
+}
+    
+    function playCharacterVoice(src){
+    if(currentVoice){
+        currentVoice.pause();
+        currentVoice.currentTime = 0;
+    }
+
+    currentVoice = new Audio(src);
+    currentVoice.volume = 0.8;
+    currentVoice.play();
+
+     // setelah voice selesai
+    currentVoice.onended = () => {
+
+        fadeVideoVolume(0.7);
+    };
+}
+
+    
+    function playSlash() {
+
+    if(!audioCtx) return;
+
+    const now = audioCtx.currentTime;
+
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.type = "sawtooth";
+
+    osc.frequency.setValueAtTime(200, now);
+    osc.frequency.exponentialRampToValueAtTime(40, now + 0.15);
+
+    gain.gain.setValueAtTime(0.2, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.15);
+}
+
+    
+
+
+    // Background berubah per state
+    function updateBackgroundByState(state) {
+        let hue = (state * 12) % 360;
+        document.body.style.background = `radial-gradient(circle at 10% 20%, hsl(${hue}, 65%, 35%), hsl(${(hue+40)%360}, 60%, 15%))`;
+    }
+const ENEMY = {
+
+    normal: "Enemy/enemy.png",
+
+    boss: "Enemy/boss.png"
+};
+
+const enemyImages = {
+
+    normal: new Image(),
+
+    boss: new Image()
+};
+
+enemyImages.normal.src = ENEMY.normal;
+
+enemyImages.boss.src = ENEMY.boss;
+
+    // GAME STATE
+    let currentGame = {
+
+        playerHp: 100,
+        maxPlayerHp: 100,
+
+        bossHp: 100,
+        maxBossHp: 100,
+        enemyHp: 100,
+
+        maxEnemyHp: 100,
+
+        heroAnim: "idle",
+        enemyAnim: "idle",
+
+        exp: 0,
+        level: 1,
+        active: false,
+        currentState: 1,
+        score: 0,
+        wrongAnswers: 0,
+        selectedChar: null,
+        playerName: "Ronin"
+    };
+    let pendingNextState = false; // untuk menunggu modal pembahasan
+    let animationFrame = null;
+    const canvas = document.getElementById('battleCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // DOM
+    const mainMenu = document.getElementById('mainMenuPanel');
+    const charSelectPanel = document.getElementById('charSelectPanel');
+    const profilePanel = document.getElementById('profilePanel');
+    const rulesPanel = document.getElementById('rulesPanel');
+    const gamePanel = document.getElementById('gamePanel');
+    const resultPanel = document.getElementById('resultPanel');
+
+    // Profile
+    function loadProfileData() {
+        let savedName = localStorage.getItem('sengokuPlayerName');
+        if(savedName) currentGame.playerName = savedName;
+        document.getElementById('playerNameInput').value = currentGame.playerName;
+        updateProfileDisplay();
+    }
+    function savePlayerName() {
+        let newName = document.getElementById('playerNameInput').value.trim();
+        if(newName === "") newName = "Ronin";
+        currentGame.playerName = newName;
+        localStorage.setItem('sengokuPlayerName', newName);
+        updateProfileDisplay();
+        alert("Nama tersimpan!");
+    }
+    
+    function updateProfileDisplay() {
+
+    let progressDiv =
+        document.getElementById('progressDisplay');
+
+    if(currentGame.active) {
+
+        progressDiv.innerHTML =
+            `⚔️ ${currentGame.playerName} ⚔️<br>
+            State: ${currentGame.currentState}/30 |
+            Skor: ${currentGame.score} |
+            Salah: ${currentGame.wrongAnswers}`;
+    } 
+    
+    else {
+
+        progressDiv.innerHTML =
+            `📜 ${currentGame.playerName}
+            — Belum memulai.
+            Tekan PLAY NOW!`;
+    }
+}
+    
+
+    // Character selection
+    function showCharSelection() {
+
+    mainMenu.classList.add('hidden');
+
+    charSelectPanel.classList.remove('hidden');
+
+    const container =
+        document.getElementById('characterList');
+
+    container.innerHTML = '';
+
+    CHARACTERS.forEach(char => {
+
+        const card = document.createElement('div');
+
+        card.className = 'char-card';
+
+        card.innerHTML = `
+            <img class="char-avatar-img"
+                src="${char.avatarUrl}"
+                alt="${char.name}">
+
+            <div class="char-name">
+                ${char.name}
+            </div>
+        `;
+
+        card.onclick = () => {
+
+            document
+                .querySelectorAll('.char-card')
+                .forEach(c => c.classList.remove('selected'));
+
+            card.classList.add('selected');
+            currentGame.selectedChar = char;
+
+
+    const rightPreview =
+            document.getElementById('rightPreview');
+
+    rightPreview.classList.remove('show');
+
+// reset posisi awal manual
+    rightPreview.style.transition = 'none';
+
+    rightPreview.style.opacity = '0';
+
+    rightPreview.style.transform =
+    'translateX(160px) scale(0.94)';
+
+    rightPreview.style.filter = 'blur(8px)';
+
+// force reflow
+    void rightPreview.offsetWidth;
+
+// aktifkan transition lagi
+    rightPreview.style.transition =
+        'opacity 0.45s ease, transform 0.45s ease, filter 0.45s ease';
+
+// ganti gambar
+    rightPreview.src = char.rightImage;
+
+// trigger animasi
+    requestAnimationFrame(() => {
+
+    rightPreview.classList.add('show');
+
+});
+
+        // audio
+        fadeVideoVolume(0.18);
+
+        playCharacterVoice(char.voice);
+
+    };
+
+    container.appendChild(card);
+
+    });
+}
+    function updateBattleUI() {
+
+    // PLAYER HP
+    document.getElementById('playerHpText').innerText =
+        `${currentGame.playerHp} / ${currentGame.maxPlayerHp}`;
+
+    document.getElementById('playerHpFill').style.width =
+        `${(currentGame.playerHp/currentGame.maxPlayerHp)*100}%`;
+
+    // LEVEL
+    document.getElementById('levelText').innerText =
+        `⭐ Level ${currentGame.level}`;
+
+    // EXP
+    let expNeed = currentGame.level * 100;
+
+    document.getElementById('expFill').style.width =
+        `${(currentGame.exp/expNeed)*100}%`;
+}
+
+    function stopBattleMusic(){
+
+    if(battleMusic){
+
+        battleMusic.pause();
+
+        battleMusic.currentTime = 0;
+
+        battleMusic = null;
+    }
+}    
+
+    function startNewGame() {
+
+        stopBattleMusic();
+
+    const bgVideo =
+    document.getElementById('bgVideo');
+
+fadeVideoVolume(0);
+
+setTimeout(()=>{
+
+    bgVideo.pause();
+
+},1000);
+        
+        if(!currentGame.selectedChar) { alert("Pilih karakter dulu!"); return; }
+        currentGame.active = true;
+        currentGame.currentState = 1;
+        currentGame.score = 0;
+        currentGame.wrongAnswers = 0;
+        charSelectPanel.classList.add('hidden');
+        gamePanel.classList.remove('hidden');
+        updateBackgroundByState(1);
+        startCanvasAnimation();
+        renderCurrentQuestion();
+        updateProfileDisplay();
+        pendingNextState = false;
+        currentGame.playerHp = 100;
+        currentGame.maxPlayerHp = 100;
+
+        currentGame.bossHp = 100;
+        currentGame.maxBossHp = 100;
+        currentGame.enemyHp = 100;
+
+        currentGame.maxEnemyHp = 100;
+
+        currentGame.exp = 0;
+        currentGame.level = 1;
+
+        battleMusic = new Audio("voice/OST.BT.mp3");
+        battleMusic.loop = true;
+        battleMusic.volume = 0.5;
+        battleMusic.play();
+    }
+
+    function quitToMenu() {
+
+        stopBattleMusic();
+
+        currentGame.active = false;
+        gamePanel.classList.add('hidden');
+        mainMenu.classList.remove('hidden');
+        charSelectPanel.classList.add('hidden');
+        profilePanel.classList.add('hidden');
+        rulesPanel.classList.add('hidden');
+        resultPanel.classList.add('hidden');
+        gamePanel.classList.add('hidden');
+        
+        if(animationFrame) cancelAnimationFrame(animationFrame);
+        updateProfileDisplay();
+        document.body.style.background = "";
+        removeModalIfExist();
+
+    const bgVideo =
+        document.getElementById('bgVideo');
+    
+    bgVideo.volume = 0;
+    bgVideo.play().then(()=>{
+
+        fadeVideoVolume(0.7);
+
+    }).catch(err=>{
+
+    console.log(err);
+
+});
+    
+    }
+
+    function isBossState(state) { return state === 10 || state === 20 || state === 30; }
+    function getCurrentQuestion() { return QUESTIONS[currentGame.currentState-1]; }
+    updateBattleUI();
+    function renderCurrentQuestion() {
+        const q = getCurrentQuestion();
+        const state = currentGame.currentState;
+        document.getElementById('stateLabel').innerHTML = `State ${state} / 30 ${isBossState(state) ? '👑 BOSS STAGE 👑' : ''}`;
+        document.getElementById('questionText').innerHTML = q.text;
+        const optsDiv = document.getElementById('optionsContainer');
+        optsDiv.innerHTML = '';
+        q.options.forEach((opt, idx) => {
+            const optEl = document.createElement('div');
+            optEl.className = 'option';
+            optEl.innerHTML = `${String.fromCharCode(65+idx)}. ${opt}`;
+            optEl.onclick = () => handleAnswer(idx);
+            optsDiv.appendChild(optEl);
+        });
+        document.getElementById('currentScore').innerText = currentGame.score;
+        document.getElementById('wrongCount').innerText = currentGame.wrongAnswers;
+        document.getElementById('bossIndicator').innerText = isBossState(state) ? "⚔️ BOSS ⚔️" : "🏹 Biasa";
+        updateBackgroundByState(state);
+    }
+
+    // Fungsi menampilkan modal pembahasan
+    function showExplanation(questionObj, isCorrect, selectedAnswerIndex) {
+        const correctAnswerLetter = String.fromCharCode(65+questionObj.correct);
+        const correctAnswerText = questionObj.options[questionObj.correct];
+        const userAnswerLetter = String.fromCharCode(65+selectedAnswerIndex);
+        const userAnswerText = questionObj.options[selectedAnswerIndex];
+        
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <h3>📖 PEMBAHASAN</h3>
+                <p><strong>Jawaban Anda:</strong> ${userAnswerLetter}. ${userAnswerText} ${isCorrect ? '✅' : '❌'}</p>
+                <p><strong>Jawaban Benar:</strong> ${correctAnswerLetter}. ${correctAnswerText}</p>
+                <p><strong>Penjelasan:</strong><br>${questionObj.explanation}</p>
+                <button id="modalContinueBtn">Lanjut ke State Berikutnya ⏩</button>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        document.getElementById('modalContinueBtn').onclick = () => {
+            modal.remove();
+            // Lanjut ke state berikutnya setelah modal ditutup
+            proceedToNextState();
+        };
+    }
+
+    function proceedToNextState() {
+        if(!currentGame.active) return;
+        if(currentGame.currentState === 30) {
+            finishGame();
+        } else {
+            currentGame.currentState++;
+            currentGame.bossHp = isBossState(currentGame.currentState+1)
+                ? 150
+                : 100;
+
+            currentGame.maxBossHp = currentGame.bossHp;
+            if(isBossState(currentGame.currentState + 1)){
+
+            currentGame.enemyHp = 250;
+
+            currentGame.maxEnemyHp = 250;
+
+        }else{
+
+            currentGame.enemyHp = 100;
+
+            currentGame.maxEnemyHp = 100;
+        }
+            renderCurrentQuestion();
+            updateProfileDisplay();
+            flashCanvasEffect();
+        }
+        pendingNextState = false;
+    }
+
+    function handleAnswer(selectedIdx) {
+        if(!currentGame.active || pendingNextState) return;
+        const q = getCurrentQuestion();
+        const isBoss = isBossState(currentGame.currentState);
+        const isCorrect = (selectedIdx === q.correct);
+        
+        if(isCorrect) {
+            playCorrect();
+            currentGame.score += isBoss ? 20 : 10;
+            playSlash();
+
+            let damage = isBoss ? 30 : 15;
+
+            currentGame.bossHp -= damage;
+
+            if(currentGame.bossHp < 0)
+                currentGame.bossHp = 0;
+
+            currentGame.exp += isBoss ? 50 : 20;
+            currentGame.enemyHp -=
+                isBoss ? 35 : 20;
+
+            if(currentGame.enemyHp < 0){
+
+                currentGame.enemyHp = 0;
+            }
+
+            // LEVEL UP
+            let expNeed = currentGame.level * 100;
+
+            if(currentGame.exp >= expNeed){
+
+                currentGame.exp -= expNeed;
+
+                currentGame.level++;
+
+                currentGame.maxPlayerHp += 20;
+
+                currentGame.playerHp =
+                    currentGame.maxPlayerHp;
+
+                alert("⭐ LEVEL UP!");
+            }
+        } else {
+            playWrong();
+            currentGame.score += isBoss ? -15 : -5;
+            currentGame.wrongAnswers++;
+            playSlash();
+
+            let damage = isBoss ? 25 : 10;
+
+            currentGame.playerHp -= damage;
+            currentGame.enemyHp -=
+                isBoss ? 35 : 20;
+
+            if(currentGame.enemyHp < 0){
+
+                currentGame.enemyHp = 0;
+            }
+
+
+            if(currentGame.playerHp < 0)
+                currentGame.playerHp = 0;
+            
+        }
+        document.getElementById('currentScore').innerText = currentGame.score;
+        document.getElementById('wrongCount').innerText = currentGame.wrongAnswers; 
+        updateBattleUI();
+        
+        // Tampilkan pembahasan, tunda lanjut state sampai user klik
+        pendingNextState = true;
+        canvas.classList.add("attack-flash");
+
+setTimeout(()=>{
+    canvas.classList.remove("attack-flash");
+},150);
+
+        showExplanation(q, isCorrect, selectedIdx);
+    }
+
+    function showCreditsScene(){
+
+    gamePanel.classList.add('hidden');
+
+    resultPanel.classList.add('hidden');
+
+    const credits =
+        document.getElementById('creditsPanel');
+        
+
+        document.body.style.transition =
+            "background 2s ease";
+
+        document.body.style.background =
+            "black";
+
+    credits.style.display = "flex";
+
+    credits.classList.remove('hidden');
+
+    // selesai credits -> balik menu
+    setTimeout(()=>{
+
+    credits.style.display = "none";
+
+    credits.classList.add('hidden');
+
+    mainMenu.classList.remove('hidden');
+
+    document
+            .querySelector('.menu-buttons')
+            .classList.add('show');
+
+    }, 56000);
+}
+
+    function finishGame() {
+        stopBattleMusic();
+
+        currentGame.active = false;
+        gamePanel.classList.add('hidden');
+        let finalWrong = currentGame.wrongAnswers;
+        let grade = '';
+        if(finalWrong <= 5) grade = 'A';
+        else if(finalWrong <= 9) grade = 'B';
+        else grade = 'C';
+        document.getElementById('finalScoreDisplay').innerHTML = `<h3>Skor Akhir: ${currentGame.score}</h3><p>Jawaban salah: ${finalWrong} kali</p>`;
+        document.getElementById('gradeDisplay').innerHTML = `GRADE ${grade}`;
+        resultPanel.classList.remove('hidden');
+        if(animationFrame) cancelAnimationFrame(animationFrame);
+        document.body.style.background = "";
+
+        setTimeout(()=>{
+
+            showCreditsScene();
+
+        }, 2500);
+    }
+
+    function removeModalIfExist() {
+        const modal = document.querySelector('.modal');
+        if(modal) modal.remove();
+    }
+
+    // Canvas animasi
+    function startCanvasAnimation() {
+        if(animationFrame) cancelAnimationFrame(animationFrame);
+        function draw() {
+            if(!ctx) return;
+            const w=canvas.width, h=canvas.height;
+            ctx.clearRect(0,0,w,h);
+            ctx.fillStyle="#1c2f2a";
+            ctx.fillRect(0,0,w,h);
+            ctx.fillStyle="#345b48";
+            for(let i=0;i<5;i++) {
+                ctx.beginPath();
+                ctx.moveTo(0, h-40 + i*15);
+                ctx.lineTo(w*0.3, h-90 + i*8);
+                ctx.lineTo(w*0.7, h-70 + i*10);
+                ctx.lineTo(w, h-50 + i*6);
+                ctx.fill();
+            }
+            for(let i=0;i<40;i++) {
+                ctx.fillStyle = `rgba(255,240,180,${0.3+Math.sin(Date.now()*0.001+i)*0.2})`;
+                ctx.fillRect( (i*131)%w, (Date.now()*0.2 + i*27)%h, 2,2);
+            }
+            if(currentGame.selectedChar) {
+                let bounce = Math.sin(Date.now()*0.008)*4;
+                let charY = h-55+bounce;
+                const heroX = 40;
+
+                const heroHpWidth = 120;
+
+                const heroHpHeight = 12;
+                ctx.font="20px monospace";
+                ctx.fillStyle="#ffefb9";
+                ctx.font = "bold 16px monospace";
+
+                ctx.fillStyle = "white";
+
+                ctx.fillText(
+                    currentGame.selectedChar.name,
+                    heroX,
+                    charY - 95
+                );
+                ctx.fillStyle = "#222";
+
+                ctx.fillRect(
+                    heroX,
+                    charY - 80,
+                    heroHpWidth,
+                    heroHpHeight
+                );
+
+                ctx.fillStyle = "#32ff5c";
+
+                ctx.fillRect(
+                    heroX,
+                    charY - 80,
+                    (currentGame.playerHp /
+                    currentGame.maxPlayerHp)
+                    * heroHpWidth,
+                    heroHpHeight
+                );
+                ctx.font="32px monospace";
+                ctx.fillStyle="#FFD966";
+                const sprite =
+                characterBattleSprites[currentGame.selectedChar.id];
+
+                if(sprite){
+
+                    ctx.imageSmoothingEnabled = false;
+
+                    ctx.drawImage(
+                        sprite,
+                        30,
+                        charY - 70 + Math.sin(Date.now()*0.01)*3,
+                        96,
+                        96
+                    );
+                }
+
+            } 
+            else {
+                ctx.font="40px monospace";
+                ctx.fillStyle="#bfa87c";
+                ctx.fillText("⚔️?", 30, h-45);
+            }
+            ctx.font="italic 10px monospace";
+            ctx.fillStyle="#acd6b0";
+            ctx.fillText("> jawab soal, pelajari pembahasan <", w-190, h-12);
+            requestAnimationFrame(draw);
+            const enemyIdle =
+    Math.sin(Date.now()*0.004)*4;
+
+            const enemyImg =
+                isBossState(currentGame.currentState)
+                ? enemyImages.boss
+                : enemyImages.normal;
+
+            const enemySize =
+                isBossState(currentGame.currentState)
+                ? 145
+                : 110;
+
+            const enemyX =
+                w - enemySize - 40;
+
+            const enemyY =
+                h - enemySize - 20 + enemyIdle;
+
+            ctx.imageSmoothingEnabled = false;
+
+            ctx.drawImage(
+                enemyImg,
+                enemyX,
+                enemyY,
+                enemySize,
+                enemySize
+            );
+            ctx.fillStyle = "white";
+
+            ctx.font = "bold 16px monospace";
+
+            ctx.fillText(
+                isBossState(currentGame.currentState)
+                    ? "BOSS"
+                    : "ENEMY",
+
+                enemyX,
+                enemyY - 28
+            );
+
+            ctx.fillStyle = "#222";
+
+            ctx.fillRect(
+                enemyX,
+                enemyY - 18,
+                140,
+                12
+            );
+
+            ctx.fillStyle = "#ff4444";
+
+            ctx.fillRect(
+                enemyX,
+                enemyY - 18,
+
+                (currentGame.enemyHp /
+                currentGame.maxEnemyHp)
+                * 140,
+
+                12
+            );
+        }
+        animationFrame = 
+            requestAnimationFrame(draw);
+    }
+
+    function flashCanvasEffect() {
+        if(!canvas) return;
+        canvas.style.transition = "0.08s linear";
+        canvas.style.filter = "brightness(1.3) contrast(1.2)";
+        setTimeout(() => canvas.style.filter = "", 100);
+    }
+
+    // Event listeners
+    document.getElementById('playNowBtn').onclick = () => showCharSelection();
+    document.getElementById('cancelCharBtn').onclick = () => { charSelectPanel.classList.add('hidden'); mainMenu.classList.remove('hidden'); };
+    document.getElementById('confirmCharBtn').onclick = () => startNewGame();
+    document.getElementById('profileBtn').onclick = () => { mainMenu.classList.add('hidden'); profilePanel.classList.remove('hidden'); loadProfileData(); };
+    document.getElementById('rulesBtn').onclick = () => { mainMenu.classList.add('hidden'); rulesPanel.classList.remove('hidden'); };
+    document.getElementById('backFromProfile').onclick = () => { profilePanel.classList.add('hidden'); mainMenu.classList.remove('hidden'); savePlayerName(); };
+    document.getElementById('backFromRules').onclick = () => { rulesPanel.classList.add('hidden'); mainMenu.classList.remove('hidden'); };
+    document.getElementById('quitGameBtn').onclick = () => quitToMenu();
+    document.getElementById('restartFromResultBtn').onclick = () => { resultPanel.classList.add('hidden'); mainMenu.classList.remove('hidden'); currentGame.selectedChar = null; };
+    document.getElementById('menuFromResultBtn').onclick = () => { resultPanel.classList.add('hidden'); mainMenu.classList.remove('hidden'); };
+    document.getElementById('saveNameBtn').onclick = () => { savePlayerName(); updateProfileDisplay(); };
+
+    // Aktifkan audio setelah klik pertama
+    document.body.addEventListener('click', () => {
+        if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+        else if(!audioCtx) { initAudio(); audioCtx.resume(); }
+    }, { once: true });
+
+    const startScreen =
+    document.getElementById('startScreen');
+
+    const startButton =
+        document.getElementById('startButton');
+
+    const bgVideo =
+        document.getElementById('bgVideo');
+
+    const gameContainer =
+        document.getElementById('gameContainer');
+
+    startButton.onclick = async () => {
+
+        // unlock audio
+        if(!audioCtx){
+
+            initAudio();
+        }
+
+        if(audioCtx.state === 'suspended'){
+
+            await audioCtx.resume();
+        }
+
+    // nyalakan video + suara
+    bgVideo.muted = false;
+
+    bgVideo.volume = 0;
+
+    await bgVideo.play();
+
+    // fade in volume
+    let vol = 0;
+
+    const fadeMusic = setInterval(()=>{
+
+        vol += 0.05;
+
+        if(vol >= 0.7){
+
+            vol = 0.7;
+
+            clearInterval(fadeMusic);
+        }
+
+        bgVideo.volume = vol;
+
+    }, 120);
+
+    // fade out start screen
+    startScreen.style.opacity = "0";
+
+    setTimeout(()=>{
+
+        startScreen.style.display = "none";
+
+    },1500);
+
+    // tampilkan menu utama
+    gameContainer.style.transition =
+        "opacity 2s ease";
+
+    gameContainer.style.opacity = "1";
+
+    // munculkan tombol menu
+    setTimeout(()=>{
+
+        document
+            .querySelector('.menu-buttons')
+            .classList.add('show');
+
+    },2500);
+};
+
+    loadProfileData();
+    if(ctx) { canvas.width = 800; canvas.height = 200; }
+
+    
+</script>
+</body>
+</html>
