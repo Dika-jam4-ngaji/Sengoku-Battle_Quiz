@@ -29,7 +29,7 @@
             border-radius: 32px;
             box-shadow: 0 20px 35px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
             border: 1px solid #5f7f6b;
-            overflow: hidden;
+            overflow: visible;
             backdrop-filter: blur(2px);
             opacity: 0;
             animation:
@@ -148,7 +148,8 @@
             margin: 25px 0;
             max-height: 55vh;
             overflow-y: auto;
-            padding: 8px;
+            overflow-x: hidden;
+            padding: 40px 8px 12px 8px;
         }
         .char-card {
             background: #2d3e36;
@@ -1053,129 +1054,157 @@
     // KARAKTER 
     const CHARACTERS = [
         { id: "date", name: "Date Masamune", avatarUrl: "Basara_img/date.jpg", 
-            battleSprite:"pixel/p.date.png", rightImage:"right/date.kanan.png",
+            idleSprite: "pixel/idle/date.1.png", attackSprite: "pixel/attack/date.2.png",
+            fallSprite: "pixel/fall/date.3.png", rightImage:"right/date.kanan.png",
             voice:"voice/date.m4a"}, 
         
         { id: "yukimura", name: "Sanada Yukimura", avatarUrl: "Basara_img/sanada.jpg", 
-            battleSprite:"pixel/p.yukimura.png", rightImage:"right/sanada.kanan.png",
-            voice:"voice/date.m4a"},
+            idleSprite: "pixel/idle/sanada.1.png", attackSprite: "pixel/attack/sanada.2.png", 
+            fallSprite:"pixel/fall/sanada.3.png", rightImage:"right/sanada.kanan.png",
+            voice:"voice/sanada.m4a"},
 
         { id: "keiji", name: "Maeda Keiji", avatarUrl: "Basara_img/keiji.jpg", 
-            battleSprite:"pixel/p.keiji.png", rightImage:"right/keiji.kanan.png",
+            idleSprite:"pixel/idle/keiji.1.png", attackSprite:"pixel/attack/keiji.2.png", 
+            fallSprite:"pixel/fall/keiji.3.png", rightImage:"right/keiji.kanan.png",
             voice:"voice/keiji.m4a"}, 
 
         { id: "nobunaga", name: "Oda Nobunaga", avatarUrl: "Basara_img/oda.jpg",
-            battleSprite:"pixel/p.oda.png", rightImage:"right/oda.kanan.png",
+            idleSprite:"pixel/idle/oda.1.png", attackSprite:"pixel/attack/oda.2.png", 
+            fallSprite:"pixel/fall/oda.3.png", rightImage:"right/oda.kanan.png",
             voice:"voice/oda.m4a"},
         
         { id: "mitsuhide", name: "Akechi Mitsuhide", avatarUrl: "Basara_img/mitsuhide.jpg", 
-            battleSprite:"pixel/p.hide.png", rightImage:"right/mitsuhide.kanan.png",
+            idleSprite:"pixel/idle/mitsuhide.1.png", attackSprite:"pixel/attack/mitsuhide.2.png", 
+            fallSprite:"pixel/fall/mitsuhide.3.png", rightImage:"right/mitsuhide.kanan.png",
             voice:"voice/mitsuhide.m4a" },
 
         { id: "ranmaru", name: "Mori Ranmaru", avatarUrl: "Basara_img/ranmaru.jpg", 
-            battleSprite:"pixel/p.ranmaru.png", rightImage:"right/ranmaru.kanan.png",
+            idleSprite:"pixel/idle/ranmaru.1.png", attackSprite:"pixel/attack/ranmaru.2.png", 
+            fallSprite:"pixel/fall/ranmaru.3.png", rightImage:"right/ranmaru.kanan.png",
             voice:"voice/ranmaru.m4a" },
 
         { id: "kenshin", name: "Uesugi Kenshin", avatarUrl: "Basara_img/kenshin.jpg", 
-            battleSprite:"pixel/p.kenshin.png", rightImage:"right/kenshin.kanan.png",
+            idleSprite:"pixel/idle/kenshin.1.png", attackSprite:"pixel/attack/kenshin.2.png",
+            fallSprite:"pixel/fall/kenshin.3.png", rightImage:"right/kenshin.kanan.png",
             voice:"voice/kenshin.m4a"}, 
 
         { id: "shingen", name: "Takeda Shingen", avatarUrl: "Basara_img/shingen.jpg", 
-            battleSprite:"pixel/p.shingen.png", rightImage:"right/shingen.kanan.png",
+            idleSprite:"pixel/idle/shingen.1.png", attackSprite:"pixel/attack/shingen.2.png", 
+            fallSprite:"pixel/fall/shingen.3.png", rightImage:"right/shingen.kanan.png",
             voice:"voice/shingen.m4a"  },
 
         { id: "kasuga", name: "Kasuga", avatarUrl: "Basara_img/kasuga.jpg", 
-            battleSprite:"pixel/p.kasuga.png", rightImage:"right/kasuga.kanan.png",
+            idleSprite:"pixel/idle/kasuga.1.png", attackSprite:"pixel/attack/kasuga.2.png", 
+            fallSprite:"pixel/fall/kasuga.3.png", rightImage:"right/kasuga.kanan.png",
             voice:"voice/kasuga.m4a"  },
 
         { id: "itsuki", name: "Itsuki", avatarUrl: "Basara_img/itsuki.jpg", 
-            battleSprite:"pixel/p.itsuki.png", rightImage:"right/itsuki.kanan.png",
+            idleSprite:"pixel/idle/itsuki.1.png", attackSprite:"pixel/attack/itsuki.2.png", 
+            fallSprite:"pixel/fall/itsuki.3.png", rightImage:"right/itsuki.kanan.png",
             voice:"voice/itsuki.m4a" },
 
         { id: "ieyasu", name: "Tokugawa Ieyasu", avatarUrl: "Basara_img/ieyasu.jpg", 
-            battleSprite:"pixel/p.tokugawa.png", rightImage:"right/tokugawa.kanan.png",
+            idleSprite:"pixel/idle/tokugawa.1.png", attackSprite:"pixel/attack/tokugawa.2.png", 
+            fallSprite:"pixel/fall/tokugawa.3.png", rightImage:"right/tokugawa.kanan.png",
             voice:"voice/tokugawa.m4a" },
 
         { id: "tadakatsu", name: "Honda Tadakatsu", avatarUrl: "Basara_img/honda.jpg", 
-            battleSprite:"pixel/p.honda.png", rightImage:"right/honda.kanan.png",
+            idleSprite:"pixel/idle/honda.1.png", attackSprite:"pixel/attack/honda.2.png", 
+            fallSprite:"pixel/fall/honda.3.png", rightImage:"right/honda.kanan.png",
             voice:"voice/honda.m4a" },
 
         { id: "nohime", name: "Nohime", avatarUrl: "Basara_img/nohime.jpg", 
-            battleSprite:"pixel/p.nohime.png", rightImage:"right/nohime.kanan.png",
+            idleSprite:"pixel/idle/nohime.1.png", attackSprite:"pixel/attack/nohime.2.png",
+            fallSprite:"pixel/fall/nohime.3.png", rightImage:"right/nohime.kanan.png",
             voice:"voice/nohime.m4a" },
 
-        { id: "oichi", name: "Oichi", avatarUrl: "Basara_img/oichi.jpg", 
-            battleSprite:"pixel/p.oichi.png", rightImage:"right/oichi.kanan.png",
+        { id: "oichi", name: "Oichi", avatarUrl: "Basara_img/Oichi.jpg", 
+            idleSprite:"pixel/idle/oichi.1.png", attackSprite:"pixel/attack/oichi.2.png", 
+            fallSprite:"pixel/fall/oichi.3.png", rightImage:"right/oichi.kanan.png",
             voice:"voice/oichi.m4a" },
 
         { id: "nagamasa", name: "Azai Nagamasa", avatarUrl: "Basara_img/nagamasa.jpg", 
-            battleSprite:"pixel/p.azai.png", rightImage:"right/azai.kanan.png",
+            idleSprite:"pixel/idle/azai.1.png", attackSprite:"pixel/attack/azai.2.png", 
+            fallSprite:"pixel/fall/azai.3.png", rightImage:"right/azai.kanan.png",
             voice:"voice/azai.m4a" },
 
-        { id: "yoshihiro", name: "Shimazu Yoshihiro", avatarUrl: "Basara_img/shimazu.jpg", 
-            battleSprite:"pixel/p.shimazu.png", rightImage:"right/shimazu.kanan.png",
+        { id: "yoshihiro", name: "Shimazu Yoshihiro", avatarUrl: "Basara_img/Shimazu.jpg", 
+            idleSprite:"pixel/idle/simazu.1.png", attackSprite:"pixel/attack/simazu.2.png", 
+            fallSprite:"pixel/fall/simazu.3.png", rightImage:"right/shimazu.kanan.png",
             voice:"voice/shimazu.m4a" },
 
         { id: "musashi", name: "Miyamoto Musashi", avatarUrl: "Basara_img/musashi.jpg", 
-            battleSprite:"pixel/p.musashi.png", rightImage:"right/musashi.kanan.png",
+            idleSprite:"pixel/idle/musashi.1.png", attackSprite:"pixel/attack/musashi.2.png", 
+            fallSprite:"pixel/fall/musashi.3.png", rightImage:"right/musashi.kanan.png",
             voice:"voice/musashi.m4a"},
 
         { id: "toshiie", name: "Maeda Toshiie", avatarUrl: "Basara_img/toshiee.jpg", 
-            battleSprite:"pixel/p.toshie.png", rightImage:"right/toshiee.kanan.png",
+            idleSprite:"pixel/idle/toshiee.1.png", attackSprite:"pixel/attack/toshiee.2.png", 
+            fallSprite:"pixel/fall/toshiee.3.png", rightImage:"right/toshiee.kanan.png",
             voice:"voice/toshiee.m4a" },
 
-        { id: "matsu", name: "Matsu", avatarUrl: "Basara_img/matsu.jpg", 
-            battleSprite:"pixel/p.matsu.png", rightImage:"right/matsu.kanan.png",
+        { id: "matsu", name: "Matsu", avatarUrl: "Basara_img/Matsu.jpg", 
+            idleSprite:"pixel/idle/matsu.1.png", attackSprite:"pixel/attack/matsu.2.png", 
+            fallSprite:"pixel/fall/matsu.3.png", rightImage:"right/matsu.kanan.png",
             voice:"voice/matsu.m4a"},
 
         { id: "motochika", name: "Chosokabe Motochika", avatarUrl: "Basara_img/motochika.jpg", 
-            battleSprite:"pixel/p.chika.png", rightImage:"right/chika.kanan.png",
+            idleSprite:"pixel/idle/chika.1.png", attackSprite:"pixel/attack/chika.2.png", 
+            fallSprite:"pixel/fall/chika.3.png", rightImage:"right/chika.kanan.png",
             voice:"voice/chika.m4a" },
 
         { id: "motonari", name: "Mori Motonari", avatarUrl: "Basara_img/motonari.jpg", 
-            battleSprite:"pixel/p.mori.png", rightImage:"right/mori.kanan.png",
+            idleSprite:"pixel/idle/mori.1.png", attackSprite:"pixel/attack/mori.2.png", 
+            fallSprite:"pixel/fall/mori.3.png", rightImage:"right/mori.kanan.png",
             voice:"voice/mori.m4a" }, 
 
         { id: "sasuke", name: "Sarutobi Sasuke", avatarUrl: "Basara_img/sasuke.jpg", 
-            battleSprite:"pixel/p.sasuke.png", rightImage:"right/sasuke.kanan.png",
+            idleSprite:"pixel/idle/sasuke.1.png", attackSprite:"pixel/attack/sasuke.2.png",
+            fallSprite:"pixel/fall/sasuke.3.png", rightImage:"right/sasuke.kanan.png",
             voice:"voice/sasuke.m4a"},
 
         { id: "kojuro", name: "Katakura Kojuro", avatarUrl: "Basara_img/kojuro.jpg", 
-            battleSprite:"pixel/p.kojuro.png",rightImage:"right/kojuro.kanan.png",
+            idleSprite:"pixel/idle/kojuro.1.png", attackSprite:"pixel/attack/kojuro.2.png",
+            fallSprite:"pixel/fall/kojuro.3.png", rightImage:"right/kojuro.kanan.png",
             voice:"voice/kojuro.m4a" }, 
 
         { id: "kotaro", name: "Fuma Kotaro", avatarUrl: "Basara_img/fhuma.jpg", 
-            battleSprite:"pixel/p.fuma.png", rightImage:"right/fuma.kanan.png",
+            idleSprite:"pixel/idle/fuma.1.png", attackSprite:"pixel/attack/fuma.2.png",
+            fallSprite:"pixel/fall/fuma.3.png", rightImage:"right/fuma.kanan.png",
             voice:"voice/fuma.m4a" }, 
 
         { id: "yoshimoto", name: "Imagawa Yoshimoto", avatarUrl: "Basara_img/imagawa.jpg", 
-            battleSprite:"pixel/p.imagawa.png", rightImage:"right/imagawa.kanan.png",
+            idleSprite:"pixel/idle/imagawa.1.png", attackSprite:"pixel/attack/imagawa.2.png", 
+            fallSprite:"pixel/fall/imagawa.3.png", rightImage:"right/imagawa.kanan.png",
             voice:"voice/imagawa.m4a" },
 
-        { id: "hideyoshi", name: "Toyotomi Hideyoshi", avatarUrl: "Basara_img/toyotomi.jpg", 
-            battleSprite:"pixel/p.toyotomi.png", rightImage:"right/toyotomi.kanan.png",
+        { id: "hideyoshi", name: "Toyotomi Hideyoshi", avatarUrl: "Basara_img/Toyotomi.jpg", 
+            idleSprite:"pixel/idle/toyotomi.1.png", attackSprite:"pixel/attack/toyotomi.2.png",
+            fallSprite:"pixel/fall/toyotomi.3.png", rightImage:"right/toyotomi.kanan.png",
             voice:"voice/toyotomi.m4a" }, 
 
         { id: "hanbei", name: "Takenaka Hanbei", avatarUrl: "Basara_img/hanbei.jpg", 
-            battleSprite:"pixel/p.hanbei.png", rightImage:"right/hanbei.kanan.png",
+            idleSprite:"pixel/idle/hanbei.1.png", attackSprite:"pixel/attack/hanbei.2.png", 
+            fallSprite:"pixel/fall/hanbei.3.png", rightImage:"right/hanbei.kanan.png",
             voice:"voice/hanbei.m4a" },
         
         { id: "xavi", name: "Xavi", avatarUrl: "Basara_img/xavi.jpg", 
-            battleSprite:"pixel/p.xavi.png", rightImage:"right/xavi.kanan.png",
-            voice:"voice/xavi.m4a" },    
+            idleSprite:"pixel/idle/xavi.1.png", attackSprite:"pixel/attack/xavi.2.png", 
+            fallSprite:"pixel/fall/xavi.3.png", rightImage:"right/xavi.kanan.png",
+            voice:"voice/xavi.m4a" },
+            
+        { id: "kenyo", name: "Hongaji Kenyo", avatarUrl: "Basara_img/hongaji.jpg", 
+            idleSprite:"pixel/idle/hongaji.1.png", attackSprite:"pixel/attack/hongaji.2.png", 
+            fallSprite:"pixel/fall/hongaji.3.png", rightImage:"right/hongaji.kanan.png",
+            voice:"voice/hongaji.m4a" }, 
+            
+        { id: "ujimasa", name: "Hojo Ujimasa", avatarUrl: "Basara_img/hojo.jpg", 
+            idleSprite:"pixel/idle/hojo.1.png", attackSprite:"pixel/attack/hojo.2.png", 
+            fallSprite:"pixel/fall/hojo.3.png", rightImage:"right/hojo.kanan.png",
+            voice:"voice/hojo.m4a" },      
         
     ];
 
-    const characterBattleSprites = {};
-    CHARACTERS.forEach(char => {
-
-    const img = new Image();
-
-    img.src = char.battleSprite;
-
-    characterBattleSprites[char.id] = img;
-
-});
 
     // Audio
     let audioCtx = null;
@@ -1323,6 +1352,8 @@ enemyImages.boss.src = ENEMY.boss;
         heroAnim: "idle",
         enemyAnim: "idle",
 
+        answerLocked: false,
+
         exp: 0,
         level: 1,
         active: false,
@@ -1334,6 +1365,25 @@ enemyImages.boss.src = ENEMY.boss;
     };
     let pendingNextState = false; // untuk menunggu modal pembahasan
     let animationFrame = null;
+
+    let heroIdleImage = new Image();
+
+    let heroAttackImage = new Image();
+
+    let heroFallImage = new Image();
+
+    let enemyIdleImage = new Image();
+
+    let enemyAttackImage = new Image();
+
+    let enemyFallImage = new Image();
+
+    let bossIdleImage = new Image();
+
+    let bossAttackImage = new Image();
+
+    let bossFallImage = new Image();
+    
     const canvas = document.getElementById('battleCanvas');
     const ctx = canvas.getContext('2d');
 
@@ -1520,6 +1570,37 @@ setTimeout(()=>{
         currentGame.wrongAnswers = 0;
         charSelectPanel.classList.add('hidden');
         gamePanel.classList.remove('hidden');
+
+    // HERO SPRITES
+heroIdleImage.src =
+    currentGame.selectedChar.idleSprite;
+
+heroAttackImage.src =
+    currentGame.selectedChar.attackSprite;
+
+heroFallImage.src =
+    currentGame.selectedChar.fallSprite;
+
+// ENEMY SPRITES
+enemyIdleImage.src =
+    "pixel/enemy/enemy.1.png";
+
+enemyAttackImage.src =
+    "pixel/enemy/enemy.2.png";
+
+enemyFallImage.src =
+    "pixel/enemy/enemy.3.png"; 
+
+// BOSS SPRITES
+bossIdleImage.src =
+    "pixel/boss/boss.1.png";
+
+bossAttackImage.src =
+    "pixel/boss/boss.2.png";
+
+bossFallImage.src =
+    "pixel/boss/boss.3.png";       
+
         updateBackgroundByState(1);
         startCanvasAnimation();
         renderCurrentQuestion();
@@ -1596,7 +1677,7 @@ setTimeout(()=>{
         });
         document.getElementById('currentScore').innerText = currentGame.score;
         document.getElementById('wrongCount').innerText = currentGame.wrongAnswers;
-        document.getElementById('bossIndicator').innerText = isBossState(state) ? "⚔️ BOSS ⚔️" : "🏹 Biasa";
+        document.getElementById('bossIndicator').innerText = isBossState(state) ? "⚔️ BOSS State ⚔️" : "🏹 Normal State";
         updateBackgroundByState(state);
     }
 
@@ -1656,11 +1737,15 @@ setTimeout(()=>{
         pendingNextState = false;
     }
 
+        
+
     function handleAnswer(selectedIdx) {
+        if(currentGame.answerLocked) return;
         if(!currentGame.active || pendingNextState) return;
         const q = getCurrentQuestion();
         const isBoss = isBossState(currentGame.currentState);
         const isCorrect = (selectedIdx === q.correct);
+        currentGame.answerLocked = true;
         
         if(isCorrect) {
             playCorrect();
@@ -1733,8 +1818,37 @@ setTimeout(()=>{
     canvas.classList.remove("attack-flash");
 },150);
 
-        showExplanation(q, isCorrect, selectedIdx);
-    }
+if(isCorrect){
+
+    currentGame.heroAnim = "attack";
+
+    currentGame.enemyAnim = "fall";
+
+} else {
+
+    currentGame.heroAnim = "fall";
+
+    currentGame.enemyAnim = "attack";
+}
+
+// delay cinematic
+setTimeout(()=>{
+
+    currentGame.heroAnim = "idle";
+
+    currentGame.enemyAnim = "idle";
+
+    showExplanation(
+        q,
+        isCorrect,
+        selectedIdx
+    );
+
+    currentGame.answerLocked = false;
+
+}, 1800);
+
+}
 
     function showCreditsScene(){
 
@@ -1862,23 +1976,33 @@ setTimeout(()=>{
                 );
                 ctx.font="32px monospace";
                 ctx.fillStyle="#FFD966";
-                const sprite =
-                characterBattleSprites[currentGame.selectedChar.id];
+                
+let currentHeroSprite =
+    heroIdleImage;
 
-                if(sprite){
+if(currentGame.heroAnim === "attack"){
 
-                    ctx.imageSmoothingEnabled = false;
+    currentHeroSprite =
+        heroAttackImage;
+}
 
-                    ctx.drawImage(
-                        sprite,
-                        30,
-                        charY - 70 + Math.sin(Date.now()*0.01)*3,
-                        96,
-                        96
-                    );
-                }
+if(currentGame.heroAnim === "fall"){
 
-            } 
+    currentHeroSprite =
+        heroFallImage;
+}
+
+ctx.imageSmoothingEnabled = false;
+
+ctx.drawImage(
+    currentHeroSprite,
+    30,
+    charY - 70 +
+    Math.sin(Date.now()*0.01)*3,
+    96,
+    96
+);
+} 
             else {
                 ctx.font="40px monospace";
                 ctx.fillStyle="#bfa87c";
@@ -1887,35 +2011,73 @@ setTimeout(()=>{
             ctx.font="italic 10px monospace";
             ctx.fillStyle="#acd6b0";
             ctx.fillText("> jawab soal, pelajari pembahasan <", w-190, h-12);
-            requestAnimationFrame(draw);
-            const enemyIdle =
-    Math.sin(Date.now()*0.004)*4;
+            
+                const enemyIdle =
+                    Math.sin(Date.now()*0.004)*4;
 
-            const enemyImg =
-                isBossState(currentGame.currentState)
-                ? enemyImages.boss
-                : enemyImages.normal;
+                const enemyX = w - 180;
+                const enemyY = h - 140 + enemyIdle;
+                const enemySize = isBossState(currentGame.currentState)
+                    ? 135
+                    : 105;    
 
-            const enemySize =
-                isBossState(currentGame.currentState)
-                ? 145
-                : 110;
+let currentEnemySprite;
 
-            const enemyX =
-                w - enemySize - 40;
+// =====================
+// BOSS STATE
+// =====================
 
-            const enemyY =
-                h - enemySize - 20 + enemyIdle;
+if(isBossState(currentGame.currentState)){
 
-            ctx.imageSmoothingEnabled = false;
+    currentEnemySprite =
+        bossIdleImage;
 
-            ctx.drawImage(
-                enemyImg,
-                enemyX,
-                enemyY,
-                enemySize,
-                enemySize
-            );
+    if(currentGame.enemyAnim === "attack"){
+
+        currentEnemySprite =
+            bossAttackImage;
+    }
+
+    if(currentGame.enemyAnim === "fall"){
+
+        currentEnemySprite =
+            bossFallImage;
+    }
+
+}
+
+// =====================
+// ENEMY BIASA
+// =====================
+
+else {
+
+    currentEnemySprite =
+        enemyIdleImage;
+
+    if(currentGame.enemyAnim === "attack"){
+
+        currentEnemySprite =
+            enemyAttackImage;
+    }
+
+    if(currentGame.enemyAnim === "fall"){
+
+        currentEnemySprite =
+            enemyFallImage;
+    }
+}                
+
+ctx.imageSmoothingEnabled = false;
+
+ctx.drawImage(
+    currentEnemySprite,
+    enemyX,
+    enemyY,
+    enemySize,
+    enemySize
+);    
+            
             ctx.fillStyle = "white";
 
             ctx.font = "bold 16px monospace";
@@ -1950,6 +2112,9 @@ setTimeout(()=>{
 
                 12
             );
+
+            // BARU LOOP FRAME LAGI
+            requestAnimationFrame(draw);
         }
         animationFrame = 
             requestAnimationFrame(draw);
